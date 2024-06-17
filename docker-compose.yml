@@ -1,0 +1,12 @@
+version: "2"
+services:
+  mqtt_dimplex_gw:
+    image: emischorr/mqtt_velux_gw:latest
+    restart: unless-stopped
+    environment:
+      - MQTT_HOST=
+      - MQTT_PORT=1883
+      - MQTT_USER=
+      - MQTT_PW=
+      - MQTT_EVENT_TOPIC_NS=
+      - MQTT_CMD_TOPIC_NS=
