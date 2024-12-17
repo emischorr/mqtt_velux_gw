@@ -1,8 +1,9 @@
 # build with: docker build -t emischorr/mqtt_velux_gw:latest .
-# run with: docker run -d --rm -e MQTT_HOST=$MQTT_HOST -e MQTT_USER=$MQTT_USER -e MQTT_PW=$MQTT_PW emischorr/mqtt_velux_gw:latest start
+#  or on mac: docker buildx build --platform=linux/amd64 --no-cache -t emischorr/mqtt_velux_gw:latest .
+# run with: docker run -d --rm -e MQTT_HOST=$MQTT_HOST -e MQTT_USER=$MQTT_USER -e MQTT_PW=$MQTT_PW -e VELUX_IP=$VELUX_IP -e VELUX_PW=$VELUX_PW emischorr/mqtt_velux_gw:latest start
 # push with: docker push emischorr/mqtt_velux_gw:latest
 
-ARG RELEASE_NAME=mqtt_dimplex_gw
+ARG RELEASE_NAME=mqtt_velux_gw
 
 ARG ELIXIR_VERSION="1.16.3"
 ARG ERLANG_VERSION="26.2.5"

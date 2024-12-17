@@ -8,8 +8,7 @@ defmodule MqttVeluxGw.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: MqttVeluxGw.Worker.start_link(arg)
-      # {MqttVeluxGw.Worker, arg}
+      {MqttVeluxGw.Velux, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -1,6 +1,6 @@
 version: "2"
 services:
-  mqtt_dimplex_gw:
+  mqtt_velux_gw:
     image: emischorr/mqtt_velux_gw:latest
     restart: unless-stopped
     environment:

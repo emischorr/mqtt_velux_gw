@@ -25,7 +25,8 @@ defmodule MqttVeluxGw.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:tortoise, "~> 0.10"},
+      {:tortoise311, "~> 0.12.0"},
+      {:klf200, "~> 0.1.0"}
     ]
   end
 end
