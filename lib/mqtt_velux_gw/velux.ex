@@ -10,8 +10,8 @@ defmodule MqttVeluxGw.Velux do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
-  def refresh do
-    GenServer.call(__MODULE__, :refresh)
+  def update do
+    GenServer.cast(__MODULE__, :update)
   end
 
   # Server
@@ -25,20 +25,24 @@ defmodule MqttVeluxGw.Velux do
     {:ok, mqtt_client_id} = Mqtt.connect()
     Mqtt.publish_meta(mqtt_client_id)
 
+    Mqtt.publish(mqtt_client_id, "status", "ready")
+    Mqtt.publish(mqtt_client_id, "last_seen", now())
+
+    Process.send_after(self(), :connect, 0)
+
+    {:noreply, %{mqtt_client_id: mqtt_client_id}}
+  end
+
+  def handle_info(:connect, state) do
     %{ip: ip, password: pw, update_interval: update_interval} =
       velux_conf()
 
     Klf200.connect(ip, pw)
-    Mqtt.publish(mqtt_client_id, "status", "online")
-    Mqtt.publish(mqtt_client_id, "last_seen", now())
+    Mqtt.publish(state.mqtt_client_id, "status", "online")
+    Mqtt.publish(state.mqtt_client_id, "last_seen", now())
 
     Process.send_after(self(), :update, update_interval)
-
-    {:noreply,
-     %{
-       mqtt_client_id: mqtt_client_id,
-       update_interval: update_interval
-     }}
+    {:noreply, %{state | update_interval: update_interval}}
   end
 
   def handle_info(:update, state) do
@@ -54,6 +58,13 @@ defmodule MqttVeluxGw.Velux do
   def handle_info({:EXIT, _pid, _signal}, state) do
     {:noreply, state}
   end
+
+  def handle_cast(:update, state) do
+    {:noreply, update_mqtt(state)}
+  end
+
+  def terminate({{:badmatch, {:error, {:already_started, _pid}}}, _trace}, _state),
+    do: Logger.info("Velux process already started")
 
   def terminate(reason, state) do
     Logger.info("Shuting down velux process: #{inspect(reason)}")
@@ -84,9 +95,11 @@ defmodule MqttVeluxGw.Velux do
   end
 
   defp send_velux_offline(%{mqtt_client_id: mqtt_client_id}) do
-    Logger.info("Velux connection lost")
+    Logger.info("Velux connection lost. Sending update to MQTT...")
     Mqtt.publish(mqtt_client_id, "status", "offline")
   end
+
+  defp send_velux_offline(_state), do: nil
 
   defp now, do: DateTime.utc_now(:second) |> DateTime.to_iso8601()
 end
