@@ -30,23 +30,23 @@ defmodule MqttVeluxGw.Velux do
 
     Process.send_after(self(), :connect, 0)
 
-    {:noreply, %{mqtt_client_id: mqtt_client_id}}
+    {:noreply, %{mqtt_client_id: mqtt_client_id, update_interval: nil}}
   end
 
-  def handle_info(:connect, state) do
+  def handle_info(:connect, %{mqtt_client_id: mqtt_client_id} = state) do
     %{ip: ip, password: pw, update_interval: update_interval} =
       velux_conf()
 
     Klf200.connect(ip, pw)
-    Mqtt.publish(state.mqtt_client_id, "status", "online")
-    Mqtt.publish(state.mqtt_client_id, "last_seen", now())
+    Mqtt.publish(mqtt_client_id, "status", "online")
+    Mqtt.publish(mqtt_client_id, "last_seen", now())
 
     Process.send_after(self(), :update, update_interval)
     {:noreply, %{state | update_interval: update_interval}}
   end
 
-  def handle_info(:update, state) do
-    Process.send_after(self(), :update, state.update_interval)
+  def handle_info(:update, %{update_interval: update_interval} = state) do
+    Process.send_after(self(), :update, update_interval)
     {:noreply, update_mqtt(state)}
   end
 
@@ -72,9 +72,9 @@ defmodule MqttVeluxGw.Velux do
     :normal
   end
 
-  defp update_mqtt(state) do
+  defp update_mqtt(%{mqtt_client_id: mqtt_client_id} = state) do
     Enum.each(Klf200.nodes(), fn {k, v} ->
-      Mqtt.publish(state.mqtt_client_id, k, Map.take(v, [:name, :node_type, :current_pos]))
+      Mqtt.publish(mqtt_client_id, k, Map.take(v, [:name, :node_type, :current_pos]))
     end)
 
     state

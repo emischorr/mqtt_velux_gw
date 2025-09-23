@@ -1,5 +1,5 @@
-# build with: docker build -t emischorr/mqtt_velux_gw:latest -t emischorr/mqtt_velux_gw:0.2.0 .
-#  or on mac: docker buildx build --platform=linux/amd64 --no-cache -t emischorr/mqtt_velux_gw:latest -t emischorr/mqtt_velux_gw:0.2.0 .
+# build with: docker build -t emischorr/mqtt_velux_gw:latest -t emischorr/mqtt_velux_gw:0.2.1 .
+#  or on mac: docker buildx build --platform=linux/amd64 --no-cache -t emischorr/mqtt_velux_gw:latest -t emischorr/mqtt_velux_gw:0.2.1 .
 # run with: docker run -d --rm -e MQTT_HOST=$MQTT_HOST -e MQTT_USER=$MQTT_USER -e MQTT_PW=$MQTT_PW -e VELUX_IP=$VELUX_IP -e VELUX_PW=$VELUX_PW emischorr/mqtt_velux_gw:latest start
 # push with: docker push emischorr/mqtt_velux_gw:latest
 
