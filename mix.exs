@@ -5,7 +5,7 @@ defmodule MqttVeluxGw.MixProject do
     [
       app: :mqtt_velux_gw,
       version: "0.1.0",
-      elixir: "~> 1.14",
+      elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       releases: [
@@ -25,8 +25,8 @@ defmodule MqttVeluxGw.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:tortoise311, "~> 0.12.0"},
-      {:klf200, "~> 0.1.0"}
+      {:tortoise311, "~> 0.12"},
+      {:klf200, "~> 0.2"}
     ]
   end
 end
