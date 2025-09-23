@@ -68,7 +68,7 @@ defmodule MqttVeluxGw.Velux do
 
   def terminate(reason, state) do
     Logger.info("Shuting down velux process: #{inspect(reason)}")
-    send_velux_offline(state)
+    velux_offline(state)
     :normal
   end
 
@@ -94,12 +94,13 @@ defmodule MqttVeluxGw.Velux do
     %{ip: ip, password: pw, update_interval: max(interval, 1) * 1000}
   end
 
-  defp send_velux_offline(%{mqtt_client_id: mqtt_client_id}) do
-    Logger.info("Velux connection lost. Sending update to MQTT...")
+  defp velux_offline(%{mqtt_client_id: mqtt_client_id}) do
+    Klf200.disconnect()
+    Logger.info("Velux connection lost/closed. Sending update to MQTT...")
     Mqtt.publish(mqtt_client_id, "status", "offline")
   end
 
-  defp send_velux_offline(_state), do: nil
+  defp velux_offline(_state), do: Klf200.disconnect()
 
   defp now, do: DateTime.utc_now(:second) |> DateTime.to_iso8601()
 end
