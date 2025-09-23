@@ -1,13 +1,13 @@
-# build with: docker build -t emischorr/mqtt_velux_gw:latest .
-#  or on mac: docker buildx build --platform=linux/amd64 --no-cache -t emischorr/mqtt_velux_gw:latest .
+# build with: docker build -t emischorr/mqtt_velux_gw:latest -t emischorr/mqtt_velux_gw:0.2.0 .
+#  or on mac: docker buildx build --platform=linux/amd64 --no-cache -t emischorr/mqtt_velux_gw:latest -t emischorr/mqtt_velux_gw:0.2.0 .
 # run with: docker run -d --rm -e MQTT_HOST=$MQTT_HOST -e MQTT_USER=$MQTT_USER -e MQTT_PW=$MQTT_PW -e VELUX_IP=$VELUX_IP -e VELUX_PW=$VELUX_PW emischorr/mqtt_velux_gw:latest start
 # push with: docker push emischorr/mqtt_velux_gw:latest
 
 ARG RELEASE_NAME=mqtt_velux_gw
 
-ARG ELIXIR_VERSION="1.16.3"
-ARG ERLANG_VERSION="26.2.5"
-ARG ALPINE_VERSION="3.18.6"
+ARG ELIXIR_VERSION="1.18.2"
+ARG ERLANG_VERSION="27.2.3"
+ARG ALPINE_VERSION="3.21.3"
 
 ARG BUILDER_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${ERLANG_VERSION}-alpine-${ALPINE_VERSION}"
 ARG RUNNER_IMAGE="alpine:${ALPINE_VERSION}"
