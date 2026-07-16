@@ -4,7 +4,7 @@ defmodule MqttVeluxGw.MixProject do
   def project do
     [
       app: :mqtt_velux_gw,
-      version: "0.2.1",
+      version: "0.2.2",
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -26,7 +26,7 @@ defmodule MqttVeluxGw.MixProject do
   defp deps do
     [
       {:tortoise311, "~> 0.12"},
-      {:klf200, "~> 0.2"}
+      {:klf200, "~> 0.3"}
     ]
   end
 end
