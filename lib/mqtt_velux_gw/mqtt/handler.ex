@@ -32,14 +32,18 @@ defmodule MqttVeluxGw.Mqtt.Handler do
 
   #  topic filter home/cmd/velux_gw/node
   def handle_message(topic, payload, state) do
-    case {List.last(topic), payload} do
-      {node, "open"} ->
-        Klf200.position(String.to_integer(node), 0)
+    # Never call the KLF200 synchronously here: a timeout would crash the
+    # MQTT connection. Hand the command off to the Velux process instead.
+    node = List.last(topic)
 
-      {node, "close"} ->
-        Klf200.position(String.to_integer(node), 100)
+    case {Integer.parse(node), payload} do
+      {{node_id, ""}, "open"} ->
+        MqttVeluxGw.Velux.position(node_id, 0)
 
-      {node, payload} ->
+      {{node_id, ""}, "close"} ->
+        MqttVeluxGw.Velux.position(node_id, 100)
+
+      {_, payload} ->
         Logger.warning("Command #{inspect(payload)} is not supported for #{inspect(node)}")
     end
 
