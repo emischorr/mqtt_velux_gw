@@ -5,9 +5,9 @@
 
 ARG RELEASE_NAME=mqtt_velux_gw
 
-ARG ELIXIR_VERSION="1.18.2"
-ARG ERLANG_VERSION="27.2.3"
-ARG ALPINE_VERSION="3.21.3"
+ARG ELIXIR_VERSION="1.20.3"
+ARG ERLANG_VERSION="28.5.0.5"
+ARG ALPINE_VERSION="3.23.5"
 
 ARG BUILDER_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${ERLANG_VERSION}-alpine-${ALPINE_VERSION}"
 ARG RUNNER_IMAGE="alpine:${ALPINE_VERSION}"
@@ -24,6 +24,12 @@ RUN apk add --no-cache build-base git python3 curl
 # sets work dir
 WORKDIR /app
 
+# Needed for cross platform builds (e.g. linux/amd64 on Apple Silicon via QEMU): the JIT's default
+# dual-mapped executable memory doesn't work under emulation and crashes the BEAM on startup.
+# +JMsingle makes the JIT use single-mapped memory. Must be set before the first mix/erl call.
+# see: https://elixirforum.com/t/mix-deps-get-memory-explosion-when-doing-cross-platform-docker-build/57157/3
+ENV ERL_FLAGS="+JMsingle true"
+
 # install hex + rebar
 RUN mix local.hex --force && \
   mix local.rebar --force
@@ -31,9 +37,6 @@ RUN mix local.hex --force && \
 # redeclare it as it is lost after the FROM above
 ARG MIX_ENV
 ENV MIX_ENV="${MIX_ENV}"
-# needed for cross platform builds with new erlang.
-# see: https://elixirforum.com/t/mix-deps-get-memory-explosion-when-doing-cross-platform-docker-build/57157/3
-ENV ERL_FLAGS="+JPperf true"
 
 # install mix dependencies
 COPY mix.exs mix.lock ./

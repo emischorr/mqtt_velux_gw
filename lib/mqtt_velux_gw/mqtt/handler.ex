@@ -1,4 +1,8 @@
 defmodule MqttVeluxGw.Mqtt.Handler do
+  @moduledoc """
+  Tortoise311 handler for incoming MQTT connection events and command messages.
+  """
+
   use Tortoise311.Handler
 
   require Logger

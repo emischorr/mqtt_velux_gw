@@ -26,7 +26,8 @@ defmodule MqttVeluxGw.MixProject do
   defp deps do
     [
       {:tortoise311, "~> 0.12"},
-      {:klf200, "~> 0.3"}
+      {:klf200, "~> 0.3"},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
 end

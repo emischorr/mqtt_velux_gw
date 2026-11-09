@@ -1,4 +1,9 @@
 defmodule MqttVeluxGw.Velux do
+  @moduledoc """
+  GenServer managing the KLF200 connection and forwarding Velux node
+  updates to MQTT.
+  """
+
   use GenServer
   require Logger
 

@@ -1,7 +1,12 @@
 defmodule MqttVeluxGw.Mqtt do
-  def client(), do: "velux_gw_#{Enum.random(1..9)}"
+  @moduledoc """
+  MQTT client for the Velux gateway: connects to the broker and publishes
+  node state and gateway status.
+  """
 
-  def connect(), do: connect(client())
+  def client, do: "velux_gw_#{Enum.random(1..9)}"
+
+  def connect, do: connect(client())
 
   def connect(client_id) do
     config = Application.get_env(:mqtt_velux_gw, :mqtt)
